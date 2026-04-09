@@ -6,6 +6,7 @@
   <title>Stroomvergelijker</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 </head>
 <body>
   <header>
@@ -65,7 +66,21 @@
     <!-- Offerte toevoegen -->
     <section class="card offerte-section">
       <h2 id="form-titel">Offerte toevoegen</h2>
-      <form id="offerte-form">
+
+      <div class="pdf-upload-gebied" id="pdf-upload-gebied">
+        <input type="file" id="pdf-upload" accept=".pdf" style="display:none">
+        <label for="pdf-upload" class="pdf-upload-label">
+          <span class="pdf-icoon">&#128196;</span>
+          <span class="pdf-upload-tekst">
+            <span data-i18n="pdfUploadLabel">Upload tarievenblad (PDF)</span>
+            <small data-i18n="pdfUploadHint">of sleep een PDF hierheen</small>
+          </span>
+        </label>
+        <span class="pdf-status" id="pdf-status"></span>
+      </div>
+
+      <div class="offerte-layout">
+        <form id="offerte-form">
 
         <!-- Bewerkmelding -->
         <div id="bewerk-banner" class="bewerk-banner" style="display:none">
@@ -206,7 +221,17 @@
           <button type="submit" class="btn-primary"  id="submit-btn">+ Voeg offerte toe</button>
           <button type="button" class="btn-secondary" id="annuleer-btn" data-i18n="annuleer" style="display:none">Annuleer</button>
         </div>
-      </form>
+        </form>
+
+        <div class="pdf-panel" id="pdf-panel" style="display:none">
+          <div class="pdf-panel-hoofd">
+            <span data-i18n="pdfPanelTitel">Tekst uit PDF</span>
+            <button type="button" id="pdf-wis-btn" class="pdf-wis-btn" data-i18n="pdfWis">Verwijder</button>
+          </div>
+          <p class="pdf-kopieer-hint" data-i18n="pdfKopieerHint">Klik op een getal om het te kopiëren</p>
+          <div class="pdf-tekst" id="pdf-tekst"></div>
+        </div>
+      </div>
     </section>
 
     <!-- Vergelijkingstabel -->
