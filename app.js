@@ -6,6 +6,7 @@ const vertalingen = {
   nl: {
     appTitel: 'Stroomvergelijker',
     headerSub: 'Vergelijk offertes van stroomaanbieders op maandbedrag',
+    disclaimerTekst: 'De uitkomsten zijn uitsluitend indicatief. De maker is niet verantwoordelijk voor reken- of invoerfouten. De eindgebruiker is zelf verantwoordelijk voor de juistheid van de resultaten.',
     jaarverbruik: 'Mijn jaarverbruik',
     verbruikGroep: 'Verbruik',
     teruglevGroep: 'Teruglevering',
@@ -78,6 +79,7 @@ const vertalingen = {
   de: {
     appTitel: 'Stromvergleich',
     headerSub: 'Vergleiche Angebote von Stromanbietern nach Monatsbetrag',
+    disclaimerTekst: 'Die Ergebnisse sind ausschließlich als Richtwert zu verstehen. Der Entwickler übernimmt keine Haftung für Rechen- oder Eingabefehler. Der Endnutzer ist selbst für die Richtigkeit der Ergebnisse verantwortlich.',
     jaarverbruik: 'Mein Jahresverbrauch',
     verbruikGroep: 'Verbrauch',
     teruglevGroep: 'Einspeisung',
@@ -150,6 +152,7 @@ const vertalingen = {
   en: {
     appTitel: 'Energy Comparator',
     headerSub: 'Compare energy supplier offers by monthly cost',
+    disclaimerTekst: 'Results are indicative only. The creator accepts no responsibility for calculation or input errors. The end user is solely responsible for verifying the accuracy of all results.',
     jaarverbruik: 'My annual consumption',
     verbruikGroep: 'Consumption',
     teruglevGroep: 'Feed-in',
