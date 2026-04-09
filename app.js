@@ -72,6 +72,7 @@ const vertalingen = {
     toelichtingJaarTeruglev: 'waarbij terugleveropbrengst = (terlv. normaal kWh × terlv. normaal tarief) + (terlv. dal kWh × terlv. dal tarief)',
     toelichtingMaandTitel: 'Maandbedrag',
     toelichtingMaandFormule: 'jaarbedrag ÷ 12',
+    teruglevToggle: 'Ik lever terug aan het net',
   },
   de: {
     appTitel: 'Stromvergleich',
@@ -142,6 +143,7 @@ const vertalingen = {
     toelichtingJaarTeruglev: 'wobei Einspeisevergütung = (Einsp. normal kWh × Einsp. Normaltarif) + (Einsp. niedrig kWh × Einsp. Niedrigtarif)',
     toelichtingMaandTitel: 'Monatsbetrag',
     toelichtingMaandFormule: 'Jahresbetrag ÷ 12',
+    teruglevToggle: 'Ich speise ins Netz ein',
   },
   en: {
     appTitel: 'Energy Comparator',
@@ -212,6 +214,7 @@ const vertalingen = {
     toelichtingJaarTeruglev: 'where feed-in revenue = (feed-in normal kWh × feed-in normal tariff) + (feed-in off-peak kWh × feed-in off-peak tariff)',
     toelichtingMaandTitel: 'Monthly amount',
     toelichtingMaandFormule: 'annual amount ÷ 12',
+    teruglevToggle: 'I feed back to the grid',
   },
 };
 
@@ -422,6 +425,7 @@ function renderTabel() {
   }
 
   const gesorteerd = [...offertes].sort((a, b) => berekenMaandkosten(a) - berekenMaandkosten(b));
+  const heeftTeruglever = gesorteerd.some(o => o.terugleverTariefNormaal != null || o.terugleverTariefDal != null);
 
   let rijen = '';
   gesorteerd.forEach((offerte, index) => {
@@ -434,6 +438,10 @@ function renderTabel() {
     const terlvNormaal    = offerte.terugleverTariefNormaal != null ? offerte.terugleverTariefNormaal : null;
     const terlvDal        = offerte.terugleverTariefDal     != null ? offerte.terugleverTariefDal     : null;
     const leveringskosten = offerte.leveringskosten != null ? offerte.leveringskosten : (offerte.vasteKosten || 0);
+    const terlvCellen     = heeftTeruglever
+      ? '<td>' + (terlvNormaal != null ? '&euro; ' + fmt4(terlvNormaal) : '&mdash;') + '</td>' +
+        '<td>' + (terlvDal     != null ? '&euro; ' + fmt4(terlvDal)     : '&mdash;') + '</td>'
+      : '';
 
     rijen += `
       <tr class="${isGoedkoopste ? 'goedkoopste' : ''}">
@@ -447,8 +455,7 @@ function renderTabel() {
         <td>&euro; ${fmt4(tariefNormaal)}</td>
         <td>&euro; ${fmt4(tariefDal)}</td>
         <td>&euro; ${fmt2(verbruikNormaal * tariefNormaal + verbruikDal * tariefDal)}</td>
-        <td>${terlvNormaal != null ? `&euro; ${fmt4(terlvNormaal)}` : '&mdash;'}</td>
-        <td>${terlvDal     != null ? `&euro; ${fmt4(terlvDal)}`     : '&mdash;'}</td>
+        ${terlvCellen}
         <td>&euro; ${fmt2(leveringskosten)}</td>
         <td>&euro; ${fmt2(offerte.netbeheerkosten || 0)}</td>
         <td>&euro; ${fmt2(offerte.vermindringEB   || 0)}</td>
@@ -475,8 +482,7 @@ function renderTabel() {
             <th>${escapeHtml(t('kolomNormaal'))}</th>
             <th>${escapeHtml(t('kolomDal'))}</th>
             <th>${escapeHtml(t('kolomVerbruikBedrag'))}</th>
-            <th>${escapeHtml(t('kolomTerugleverNormaal'))}</th>
-            <th>${escapeHtml(t('kolomTerugleverDal'))}</th>
+            ${heeftTeruglever ? `<th>${escapeHtml(t('kolomTerugleverNormaal'))}</th><th>${escapeHtml(t('kolomTerugleverDal'))}</th>` : ''}
             <th>${escapeHtml(t('kolomLevering'))}</th>
             <th>${escapeHtml(t('kolomNetbeheer'))}</th>
             <th>${escapeHtml(t('kolomVermEB'))}</th>
@@ -608,6 +614,9 @@ function vulFormulierIn(offerte) {
   document.getElementById('vermindering-eb').value          = offerte.vermindringEB   ? Number(offerte.vermindringEB).toFixed(2)   : '';
   document.getElementById('vermindering-eb-periode').value  = 'jaar';
 
+  const heeftTerlv = offerte.terugleverTariefNormaal != null || offerte.terugleverTariefDal != null;
+  document.getElementById('heeft-teruglevering').checked          = heeftTerlv;
+  document.getElementById('teruglevering-sectie').style.display   = heeftTerlv ? '' : 'none';
   document.getElementById('teruglever-normaal').value = offerte.terugleverTariefNormaal != null ? Number(offerte.terugleverTariefNormaal).toFixed(5) : '';
   document.getElementById('teruglever-dal').value     = offerte.terugleverTariefDal     != null ? Number(offerte.terugleverTariefDal).toFixed(5)     : '';
 }
@@ -632,6 +641,7 @@ function annuleerBewerken() {
   ['totaal-normaal','levering-normaal','eb-normaal','totaal-dal','levering-dal','eb-dal']
     .forEach(id => document.getElementById(id).classList.remove('berekend'));
   document.getElementById('offerte-form').reset();
+  document.getElementById('teruglevering-sectie').style.display = 'none';
   document.getElementById('form-titel').textContent      = t('offerteToevoegen');
   document.getElementById('submit-btn').textContent      = t('voegToe');
   document.getElementById('bewerk-banner').style.display = 'none';
@@ -675,8 +685,8 @@ document.getElementById('offerte-form').addEventListener('submit', e => {
     totaalTariefDal:         totaalDal,
     leveringsTariefDal:      getOptional('levering-dal'),
     energiebelastingDal:     getOptional('eb-dal'),
-    terugleverTariefNormaal: getOptional('teruglever-normaal'),
-    terugleverTariefDal:     getOptional('teruglever-dal'),
+    terugleverTariefNormaal: document.getElementById('heeft-teruglevering').checked ? getOptional('teruglever-normaal') : null,
+    terugleverTariefDal:     document.getElementById('heeft-teruglevering').checked ? getOptional('teruglever-dal')     : null,
     leveringskosten: naarJaarlijks(lkVal, document.getElementById('leveringskosten-periode').value),
     netbeheerkosten: naarJaarlijks(parseFloat(document.getElementById('netbeheerkosten').value) || 0, document.getElementById('netbeheerkosten-periode').value),
     vermindringEB:   naarJaarlijks(parseFloat(document.getElementById('vermindering-eb').value)  || 0, document.getElementById('vermindering-eb-periode').value),
@@ -708,6 +718,10 @@ document.getElementById('offerte-form').addEventListener('submit', e => {
 });
 
 // --- Taalknappen ---
+
+document.getElementById('heeft-teruglevering').addEventListener('change', function () {
+  document.getElementById('teruglevering-sectie').style.display = this.checked ? '' : 'none';
+});
 
 document.querySelectorAll('.taal-btn').forEach(btn => {
   btn.addEventListener('click', () => setTaal(btn.dataset.lang));

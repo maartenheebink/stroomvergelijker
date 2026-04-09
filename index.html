@@ -132,8 +132,17 @@
           </div>
         </div>
 
-        <!-- Teruglevertarief -->
+        <!-- Teruglevering toggle -->
         <div class="form-sectie">
+          <label class="toggle-label">
+            <input type="checkbox" id="heeft-teruglevering">
+            <span class="toggle-switch"></span>
+            <span data-i18n="teruglevToggle">Ik lever terug aan het net</span>
+          </label>
+        </div>
+
+        <!-- Teruglevertarief -->
+        <div class="form-sectie" id="teruglevering-sectie" style="display:none">
           <div class="form-sectie-label" data-i18n="terugleverTariefLabel">Teruglevertarief (€/kWh)</div>
           <div class="form-grid">
             <div class="input-group">
