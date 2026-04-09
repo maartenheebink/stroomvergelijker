@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stroomvergelijker</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-links">
+      <div>
+        <h1 data-i18n="appTitel">Stroomvergelijker</h1>
+        <p class="header-sub" data-i18n="headerSub">Vergelijk offertes van stroomaanbieders op maandbedrag</p>
+      </div>
+      <div class="taal-switcher">
+        <button class="taal-btn" data-lang="nl">NL</button>
+        <button class="taal-btn" data-lang="de">DE</button>
+        <button class="taal-btn" data-lang="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Verbruik & teruglevering -->
+    <section class="card verbruik-section">
+      <h2 data-i18n="jaarverbruik">Mijn jaarverbruik</h2>
+
+      <div class="verbruik-groep">
+        <div class="verbruik-groep-label" data-i18n="verbruikGroep">Verbruik</div>
+        <div class="verbruik-inputs">
+          <div class="input-group">
+            <label for="verbruik-normaal" data-i18n="normaalKwhJaar">Normaal (kWh/jaar)</label>
+            <input type="number" id="verbruik-normaal" min="0" step="1" placeholder="bijv. 2000">
+          </div>
+          <div class="input-group">
+            <label for="verbruik-dal" data-i18n="dalKwhJaar">Dal (kWh/jaar)</label>
+            <input type="number" id="verbruik-dal" min="0" step="1" placeholder="bijv. 500">
+          </div>
+        </div>
+      </div>
+
+      <div class="verbruik-groep">
+        <div class="verbruik-groep-label" data-i18n="teruglevGroep">Teruglevering</div>
+        <div class="verbruik-inputs">
+          <div class="input-group">
+            <label for="teruglevering-normaal" data-i18n="normaalKwhJaar">Normaal (kWh/jaar)</label>
+            <input type="number" id="teruglevering-normaal" min="0" step="1" placeholder="bijv. 1500">
+          </div>
+          <div class="input-group">
+            <label for="teruglevering-dal" data-i18n="dalKwhJaar">Dal (kWh/jaar)</label>
+            <input type="number" id="teruglevering-dal" min="0" step="1" placeholder="bijv. 0">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Offerte toevoegen -->
+    <section class="card offerte-section">
+      <h2 id="form-titel">Offerte toevoegen</h2>
+      <form id="offerte-form">
+
+        <!-- Bewerkmelding -->
+        <div id="bewerk-banner" class="bewerk-banner" style="display:none">
+          &#9998; <span data-i18n="bewerkBezig">Bezig met bewerken:</span>&nbsp;<strong id="bewerk-naam"></strong>
+        </div>
+
+        <!-- Basis info -->
+        <div class="form-grid form-grid-top">
+          <div class="input-group">
+            <label for="naam"><span data-i18n="leverancier">Leverancier</span> <span class="required">*</span></label>
+            <input type="text" id="naam" placeholder="bijv. Vattenfall" required>
+          </div>
+          <div class="input-group">
+            <label for="tarieftype" data-i18n="tarieftype">Tarieftype</label>
+            <select id="tarieftype">
+              <option value="Vast"     data-i18n="tarieftypeVast">Vast</option>
+              <option value="Variabel" data-i18n="tarieftypeVariabel">Variabel</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="looptijd" data-i18n="looptijd">Looptijd</label>
+            <select id="looptijd">
+              <option value="1 jaar"    data-i18n="looptijd1jaar">1 jaar</option>
+              <option value="2 jaar"    data-i18n="looptijd2jaar">2 jaar</option>
+              <option value="3 jaar"    data-i18n="looptijd3jaar">3 jaar</option>
+              <option value="Onbepaald" data-i18n="looptijdOnbepaald">Onbepaald</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Normaal tarief drieluik -->
+        <div class="form-sectie">
+          <div class="form-sectie-label" data-i18n="normaalTariefLabel">Normaal tarief (€/kWh)</div>
+          <div class="tarief-drieluik">
+            <div class="input-group">
+              <label for="totaal-normaal"   data-i18n="totaaltarief">Totaaltarief</label>
+              <input type="number" id="totaal-normaal"   step="0.00001" placeholder="bijv. 0.42000">
+            </div>
+            <div class="tarief-operator"><span>=</span></div>
+            <div class="input-group">
+              <label for="levering-normaal" data-i18n="leveringstarief">Leveringstarief</label>
+              <input type="number" id="levering-normaal" step="0.00001" placeholder="bijv. 0.28500">
+            </div>
+            <div class="tarief-operator"><span>+</span></div>
+            <div class="input-group">
+              <label for="eb-normaal"       data-i18n="energiebelasting">Energiebelasting</label>
+              <input type="number" id="eb-normaal"       step="0.00001" placeholder="bijv. 0.13500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Dal tarief drieluik -->
+        <div class="form-sectie">
+          <div class="form-sectie-label" data-i18n="dalTariefLabel">Dal tarief (€/kWh)</div>
+          <div class="tarief-drieluik">
+            <div class="input-group">
+              <label for="totaal-dal"   data-i18n="totaaltarief">Totaaltarief</label>
+              <input type="number" id="totaal-dal"   step="0.00001" placeholder="bijv. 0.37000">
+            </div>
+            <div class="tarief-operator"><span>=</span></div>
+            <div class="input-group">
+              <label for="levering-dal" data-i18n="leveringstarief">Leveringstarief</label>
+              <input type="number" id="levering-dal" step="0.00001" placeholder="bijv. 0.23500">
+            </div>
+            <div class="tarief-operator"><span>+</span></div>
+            <div class="input-group">
+              <label for="eb-dal"       data-i18n="energiebelasting">Energiebelasting</label>
+              <input type="number" id="eb-dal"       step="0.00001" placeholder="bijv. 0.13500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Teruglevertarief -->
+        <div class="form-sectie">
+          <div class="form-sectie-label" data-i18n="terugleverTariefLabel">Teruglevertarief (€/kWh)</div>
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="teruglever-normaal" data-i18n="terugleverTariefNormaalLabel">Teruglevertarief normaal</label>
+              <input type="number" id="teruglever-normaal" step="0.00001" min="0" placeholder="bijv. 0.09000">
+            </div>
+            <div class="input-group">
+              <label for="teruglever-dal" data-i18n="terugleverTariefDalLabel">Teruglevertarief dal</label>
+              <input type="number" id="teruglever-dal" step="0.00001" min="0" placeholder="bijv. 0.09000">
+            </div>
+          </div>
+        </div>
+
+        <!-- Vaste kosten -->
+        <div class="form-sectie">
+          <div class="form-sectie-label" data-i18n="vasteKosten">Vaste kosten</div>
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="leveringskosten"><span data-i18n="leveringskosten">Leveringskosten</span> <span class="required">*</span></label>
+              <div class="dag-jaar-wrapper">
+                <input type="number" id="leveringskosten" step="0.00001" min="0" placeholder="bijv. 60.00" required>
+                <select id="leveringskosten-periode">
+                  <option value="jaar" data-i18n="perJaar">per jaar</option>
+                  <option value="dag"  data-i18n="perDag">per dag</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="netbeheerkosten" data-i18n="netbeheerkosten">Netbeheerkosten</label>
+              <div class="dag-jaar-wrapper">
+                <input type="number" id="netbeheerkosten" step="0.00001" min="0" placeholder="0.00">
+                <select id="netbeheerkosten-periode">
+                  <option value="jaar" data-i18n="perJaar">per jaar</option>
+                  <option value="dag"  data-i18n="perDag">per dag</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="vermindering-eb" data-i18n="vermindringEB">Vermindering energiebelasting</label>
+              <div class="dag-jaar-wrapper">
+                <input type="number" id="vermindering-eb" step="0.00001" min="0" placeholder="0.00">
+                <select id="vermindering-eb-periode">
+                  <option value="jaar" data-i18n="perJaar">per jaar</option>
+                  <option value="dag"  data-i18n="perDag">per dag</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-acties">
+          <button type="submit" class="btn-primary"  id="submit-btn">+ Voeg offerte toe</button>
+          <button type="button" class="btn-secondary" id="annuleer-btn" data-i18n="annuleer" style="display:none">Annuleer</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Vergelijkingstabel -->
+    <section class="card vergelijking-section">
+      <h2 data-i18n="vergelijking">Vergelijking</h2>
+      <div id="tabel-container">
+        <p class="leeg-melding" data-i18n="leegMelding">Voeg een offerte toe om de vergelijking te starten.</p>
+      </div>
+    </section>
+
+    <!-- Grafiek -->
+    <section class="card grafiek-section" id="grafiek-section" style="display:none">
+      <h2 data-i18n="grafiekTitel">Maandbedrag per aanbieder</h2>
+      <div class="grafiek-wrapper">
+        <canvas id="grafiek"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
