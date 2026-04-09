@@ -64,6 +64,14 @@ const vertalingen = {
     perMaand: 'maand',
     alertTarief: 'Vul voor zowel het normaal- als het dal tarief minimaal twee van de drie tariefvelden in.',
     alertLeveringskosten: 'Vul de leveringskosten in.',
+    toelichtingTitel: 'Toelichting berekening',
+    toelichtingVerbruikTitel: 'Verbruikskosten (€/jr)',
+    toelichtingVerbruikFormule: '(normaalverbruik kWh/jr × normaal tarief) + (dalverbruik kWh/jr × dal tarief)',
+    toelichtingJaarTitel: 'Jaarbedrag',
+    toelichtingJaarFormule: 'verbruikskosten + leveringskosten + netbeheerkosten − vermindering EB − terugleveropbrengst',
+    toelichtingJaarTeruglev: 'waarbij terugleveropbrengst = (terlv. normaal kWh × terlv. normaal tarief) + (terlv. dal kWh × terlv. dal tarief)',
+    toelichtingMaandTitel: 'Maandbedrag',
+    toelichtingMaandFormule: 'jaarbedrag ÷ 12',
   },
   de: {
     appTitel: 'Stromvergleich',
@@ -126,6 +134,14 @@ const vertalingen = {
     perMaand: 'Monat',
     alertTarief: 'Bitte fülle für Normal- und Niedrigtarif mindestens zwei der drei Tariffelder aus.',
     alertLeveringskosten: 'Bitte fülle die Lieferkosten aus.',
+    toelichtingTitel: 'Berechnungshinweis',
+    toelichtingVerbruikTitel: 'Verbrauchskosten (€/J)',
+    toelichtingVerbruikFormule: '(Normalverbrauch kWh/J × Normaltarif) + (Niedrigverbrauch kWh/J × Niedrigtarif)',
+    toelichtingJaarTitel: 'Jahresbetrag',
+    toelichtingJaarFormule: 'Verbrauchskosten + Lieferkosten + Netzkosten − Energiesteuerermäßigung − Einspeisevergütung',
+    toelichtingJaarTeruglev: 'wobei Einspeisevergütung = (Einsp. normal kWh × Einsp. Normaltarif) + (Einsp. niedrig kWh × Einsp. Niedrigtarif)',
+    toelichtingMaandTitel: 'Monatsbetrag',
+    toelichtingMaandFormule: 'Jahresbetrag ÷ 12',
   },
   en: {
     appTitel: 'Energy Comparator',
@@ -188,6 +204,14 @@ const vertalingen = {
     perMaand: 'month',
     alertTarief: 'Please fill in at least two of the three tariff fields for both normal and off-peak tariffs.',
     alertLeveringskosten: 'Please fill in the delivery costs.',
+    toelichtingTitel: 'Calculation explained',
+    toelichtingVerbruikTitel: 'Consumption cost (€/yr)',
+    toelichtingVerbruikFormule: '(normal kWh/yr × normal tariff) + (off-peak kWh/yr × off-peak tariff)',
+    toelichtingJaarTitel: 'Annual amount',
+    toelichtingJaarFormule: 'consumption cost + delivery costs + network costs − energy tax reduction − feed-in revenue',
+    toelichtingJaarTeruglev: 'where feed-in revenue = (feed-in normal kWh × feed-in normal tariff) + (feed-in off-peak kWh × feed-in off-peak tariff)',
+    toelichtingMaandTitel: 'Monthly amount',
+    toelichtingMaandFormule: 'annual amount ÷ 12',
   },
 };
 
@@ -393,6 +417,7 @@ function renderTabel() {
 
   if (offertes.length === 0) {
     container.innerHTML = `<p class="leeg-melding">${escapeHtml(t('leegMelding'))}</p>`;
+    renderToelichting();
     return;
   }
 
@@ -470,6 +495,40 @@ function renderTabel() {
   container.querySelectorAll('.verwijder-btn').forEach(btn => {
     btn.addEventListener('click', () => verwijderOfferte(btn.dataset.id));
   });
+
+  renderToelichting();
+}
+
+// --- Render toelichting ---
+
+function renderToelichting() {
+  const container = document.getElementById('toelichting-container');
+  if (!container) return;
+
+  if (offertes.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="toelichting">
+      <h3 class="toelichting-titel">${escapeHtml(t('toelichtingTitel'))}</h3>
+      <dl class="toelichting-lijst">
+        <div class="toelichting-item">
+          <dt>${escapeHtml(t('toelichtingVerbruikTitel'))}</dt>
+          <dd>= <code>${escapeHtml(t('toelichtingVerbruikFormule'))}</code></dd>
+        </div>
+        <div class="toelichting-item">
+          <dt>${escapeHtml(t('toelichtingJaarTitel'))}</dt>
+          <dd>= <code>${escapeHtml(t('toelichtingJaarFormule'))}</code></dd>
+          <dd class="toelichting-sub"><code>${escapeHtml(t('toelichtingJaarTeruglev'))}</code></dd>
+        </div>
+        <div class="toelichting-item">
+          <dt>${escapeHtml(t('toelichtingMaandTitel'))}</dt>
+          <dd>= <code>${escapeHtml(t('toelichtingMaandFormule'))}</code></dd>
+        </div>
+      </dl>
+    </div>`;
 }
 
 // --- Render grafiek ---

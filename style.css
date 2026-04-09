@@ -434,6 +434,60 @@ tbody tr.goedkoopste:hover {
   color: var(--kleur-rood);
 }
 
+/* Toelichting berekening */
+.toelichting {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--kleur-rand);
+}
+
+.toelichting-titel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--kleur-tekst-zacht);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.toelichting-lijst {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toelichting-item dt {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--kleur-tekst);
+  margin-bottom: 3px;
+}
+
+.toelichting-item dd {
+  font-size: 0.85rem;
+  color: var(--kleur-tekst-zacht);
+  margin-left: 0;
+}
+
+.toelichting-item dd code {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.82rem;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--kleur-tekst);
+}
+
+.toelichting-sub {
+  margin-top: 4px;
+  font-size: 0.8rem;
+}
+
+.toelichting-sub code {
+  font-size: 0.78rem !important;
+  color: var(--kleur-tekst-zacht) !important;
+}
+
 /* Grafiek */
 .grafiek-wrapper {
   max-height: 360px;
