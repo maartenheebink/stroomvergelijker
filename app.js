@@ -36,6 +36,7 @@ const vertalingen = {
     terugleverTariefNormaalLabel: 'Teruglevertarief normaal',
     terugleverTariefDalLabel: 'Teruglevertarief dal',
     perJaar: 'per jaar',
+    perMaandPeriode: 'per maand',
     perDag: 'per dag',
     voegToe: '+ Voeg offerte toe',
     opslaan: 'Opslaan',
@@ -107,6 +108,7 @@ const vertalingen = {
     terugleverTariefNormaalLabel: 'Einspeisevergütung Normal',
     terugleverTariefDalLabel: 'Einspeisevergütung Niedrig',
     perJaar: 'pro Jahr',
+    perMaandPeriode: 'pro Monat',
     perDag: 'pro Tag',
     voegToe: '+ Angebot hinzufügen',
     opslaan: 'Speichern',
@@ -178,6 +180,7 @@ const vertalingen = {
     terugleverTariefNormaalLabel: 'Feed-in tariff normal',
     terugleverTariefDalLabel: 'Feed-in tariff off-peak',
     perJaar: 'per year',
+    perMaandPeriode: 'per month',
     perDag: 'per day',
     voegToe: '+ Add offer',
     opslaan: 'Save',
@@ -305,7 +308,9 @@ function berekenMaandkosten(offerte) {
 
 function naarJaarlijks(waarde, periode) {
   if (!waarde || isNaN(waarde)) return 0;
-  return periode === 'dag' ? waarde * 365 : waarde;
+  if (periode === 'dag')   return waarde * 365;
+  if (periode === 'maand') return waarde * 12;
+  return waarde;
 }
 
 function herbereken(prefix) {
