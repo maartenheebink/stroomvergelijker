@@ -49,6 +49,7 @@ const vertalingen = {
     kolomLooptijd: 'Looptijd',
     kolomNormaal: 'Norm. (€/kWh)',
     kolomDal: 'Dal (€/kWh)',
+    kolomVerbruikBedrag: 'Verbruik (€/jr)',
     kolomTerugleverNormaal: 'Terlv. norm. (€/kWh)',
     kolomTerugleverDal: 'Terlv. dal (€/kWh)',
     kolomLevering: 'Levering (€/jr)',
@@ -110,6 +111,7 @@ const vertalingen = {
     kolomLooptijd: 'Laufzeit',
     kolomNormaal: 'Normal (€/kWh)',
     kolomDal: 'Niedrig (€/kWh)',
+    kolomVerbruikBedrag: 'Verbrauch (€/J)',
     kolomTerugleverNormaal: 'Einsp. norm. (€/kWh)',
     kolomTerugleverDal: 'Einsp. nied. (€/kWh)',
     kolomLevering: 'Lieferung (€/J)',
@@ -171,6 +173,7 @@ const vertalingen = {
     kolomLooptijd: 'Contract',
     kolomNormaal: 'Normal (€/kWh)',
     kolomDal: 'Off-peak (€/kWh)',
+    kolomVerbruikBedrag: 'Consumption (€/yr)',
     kolomTerugleverNormaal: 'Feed-in norm. (€/kWh)',
     kolomTerugleverDal: 'Feed-in off-pk. (€/kWh)',
     kolomLevering: 'Delivery (€/yr)',
@@ -418,6 +421,7 @@ function renderTabel() {
         <td>${escapeHtml(vertaalWaarde('looptijd',   offerte.looptijd))}</td>
         <td>&euro; ${fmt4(tariefNormaal)}</td>
         <td>&euro; ${fmt4(tariefDal)}</td>
+        <td>&euro; ${fmt2(verbruikNormaal * tariefNormaal + verbruikDal * tariefDal)}</td>
         <td>${terlvNormaal != null ? `&euro; ${fmt4(terlvNormaal)}` : '&mdash;'}</td>
         <td>${terlvDal     != null ? `&euro; ${fmt4(terlvDal)}`     : '&mdash;'}</td>
         <td>&euro; ${fmt2(leveringskosten)}</td>
@@ -445,6 +449,7 @@ function renderTabel() {
             <th>${escapeHtml(t('kolomLooptijd'))}</th>
             <th>${escapeHtml(t('kolomNormaal'))}</th>
             <th>${escapeHtml(t('kolomDal'))}</th>
+            <th>${escapeHtml(t('kolomVerbruikBedrag'))}</th>
             <th>${escapeHtml(t('kolomTerugleverNormaal'))}</th>
             <th>${escapeHtml(t('kolomTerugleverDal'))}</th>
             <th>${escapeHtml(t('kolomLevering'))}</th>
