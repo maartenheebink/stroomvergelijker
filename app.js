@@ -583,10 +583,6 @@ function renderGrafiek() {
 
   if (grafiekInstantie) { grafiekInstantie.destroy(); grafiekInstantie = null; }
 
-  const donker    = document.documentElement.getAttribute('data-thema') === 'donker';
-  const tekst     = donker ? '#94a3b8' : '#64748b';
-  const raster    = donker ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
-
   grafiekInstantie = new Chart(canvas, {
     type: 'bar',
     data: { labels, datasets: [{ label: t('grafiekLabel'), data, backgroundColor: kleuren, borderColor: randenKleuren, borderWidth: 1.5, borderRadius: 6 }] },
@@ -597,8 +593,8 @@ function renderGrafiek() {
         tooltip: { callbacks: { label: ctx => ` € ${ctx.parsed.y.toFixed(2)} / ${t('perMaand')}` } },
       },
       scales: {
-        y: { beginAtZero: false, ticks: { callback: val => `€ ${val}`, color: tekst }, grid: { color: raster } },
-        x: { grid: { display: false }, ticks: { color: tekst } },
+        y: { beginAtZero: false, ticks: { callback: val => `€ ${val}` }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        x: { grid: { display: false } },
       },
     },
   });
@@ -761,27 +757,6 @@ document.querySelectorAll('.taal-btn').forEach(btn => {
 });
 document.getElementById('annuleer-btn').addEventListener('click', annuleerBewerken);
 
-// --- Thema ---
-
-function setThema(thema, slaOp = true) {
-  document.documentElement.setAttribute('data-thema', thema);
-  const btn = document.getElementById('thema-btn');
-  if (btn) btn.textContent = thema === 'donker' ? '\u2600' : '\u263D';
-  if (slaOp) localStorage.setItem('stroomvergelijker_thema', thema);
-  renderGrafiek();
-}
-
-function initThema() {
-  const opgeslagen    = localStorage.getItem('stroomvergelijker_thema');
-  const systeemDonker = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  setThema(opgeslagen ?? (systeemDonker ? 'donker' : 'licht'), false);
-}
-
-document.getElementById('thema-btn').addEventListener('click', () => {
-  const huidig = document.documentElement.getAttribute('data-thema');
-  setThema(huidig === 'donker' ? 'licht' : 'donker');
-});
-
 // --- PDF verwerking ---
 
 if (typeof pdfjsLib !== 'undefined') {
@@ -889,7 +864,6 @@ document.getElementById('pdf-tekst').addEventListener('click', e => {
 
 // --- Initialisatie ---
 
-initThema();
 koppelTariefVelden();
 laadOp();
 applyTranslations();
