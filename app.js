@@ -75,6 +75,13 @@ const vertalingen = {
     toelichtingMaandTitel: 'Maandbedrag',
     toelichtingMaandFormule: 'jaarbedrag ÷ 12',
     teruglevToggle: 'Ik lever terug aan het net',
+    pdfUploadLabel: 'Upload tarievenblad (PDF)',
+    pdfUploadHint: 'of sleep een PDF hierheen',
+    pdfPanelTitel: 'Tekst uit PDF',
+    pdfWis: 'Verwijder',
+    pdfKopieerHint: 'Klik op een getal om het te kopiëren',
+    pdfLaden: 'PDF laden\u2026',
+    pdfFout: 'Kon de PDF niet laden',
   },
   de: {
     appTitel: 'Stromvergleich',
@@ -148,6 +155,13 @@ const vertalingen = {
     toelichtingMaandTitel: 'Monatsbetrag',
     toelichtingMaandFormule: 'Jahresbetrag ÷ 12',
     teruglevToggle: 'Ich speise ins Netz ein',
+    pdfUploadLabel: 'Tarifblatt hochladen (PDF)',
+    pdfUploadHint: 'oder PDF hierhin ziehen',
+    pdfPanelTitel: 'Text aus PDF',
+    pdfWis: 'Entfernen',
+    pdfKopieerHint: 'Klicke auf eine Zahl zum Kopieren',
+    pdfLaden: 'PDF laden\u2026',
+    pdfFout: 'PDF konnte nicht geladen werden',
   },
   en: {
     appTitel: 'Energy Comparator',
@@ -221,6 +235,13 @@ const vertalingen = {
     toelichtingMaandTitel: 'Monthly amount',
     toelichtingMaandFormule: 'annual amount ÷ 12',
     teruglevToggle: 'I feed back to the grid',
+    pdfUploadLabel: 'Upload tariff sheet (PDF)',
+    pdfUploadHint: 'or drag a PDF here',
+    pdfPanelTitel: 'Text from PDF',
+    pdfWis: 'Remove',
+    pdfKopieerHint: 'Click a number to copy it',
+    pdfLaden: 'Loading PDF\u2026',
+    pdfFout: 'Could not load PDF',
   },
 };
 
@@ -735,6 +756,111 @@ document.querySelectorAll('.taal-btn').forEach(btn => {
   btn.addEventListener('click', () => setTaal(btn.dataset.lang));
 });
 document.getElementById('annuleer-btn').addEventListener('click', annuleerBewerken);
+
+// --- PDF verwerking ---
+
+if (typeof pdfjsLib !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+}
+
+function highlightGetallen(tekst) {
+  const veilig = tekst
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Highlight: €-prefix, getallen met 3+ decimalen, getallen met eenheden
+  return veilig.replace(
+    /(?:€\s*\d+[.,]\d+|\d+[.,]\d{3,}|\d+[.,]\d+\s*(?:€|ct\.?|cent|kWh|kwh|\/kWh|\/kwh|euro))/gi,
+    match => `<span class="pdf-getal">${match}</span>`
+  );
+}
+
+async function verwerkPDFBestand(bestand) {
+  const statusEl = document.getElementById('pdf-status');
+  const panelEl  = document.getElementById('pdf-panel');
+  const tekstEl  = document.getElementById('pdf-tekst');
+
+  statusEl.textContent = t('pdfLaden');
+  panelEl.style.display = 'none';
+
+  try {
+    const buffer = await bestand.arrayBuffer();
+    const pdf    = await pdfjsLib.getDocument({ data: buffer }).promise;
+
+    let volleTekst = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const pagina  = await pdf.getPage(i);
+      const inhoud  = await pagina.getTextContent();
+
+      // Groepeer items op Y-positie om regelstructuur te bewaren
+      const regels = new Map();
+      inhoud.items.forEach(item => {
+        const y = Math.round(item.transform[5] / 4) * 4;
+        if (!regels.has(y)) regels.set(y, []);
+        regels.get(y).push(item.str);
+      });
+
+      const paginaTekst = [...regels.entries()]
+        .sort((a, b) => b[0] - a[0])
+        .map(([, items]) => items.join(' '))
+        .filter(r => r.trim())
+        .join('\n');
+
+      volleTekst += (i > 1 ? `\n\n\u2500\u2500 Pagina ${i} \u2500\u2500\n\n` : '') + paginaTekst;
+    }
+
+    tekstEl.innerHTML = highlightGetallen(volleTekst);
+    statusEl.textContent = bestand.name;
+    document.getElementById('pdf-upload-gebied').classList.add('heeft-bestand');
+    panelEl.style.display = 'flex';
+
+  } catch (fout) {
+    statusEl.textContent = t('pdfFout');
+    console.error('PDF verwerking mislukt:', fout);
+  }
+}
+
+const pdfGebied = document.getElementById('pdf-upload-gebied');
+const pdfInput  = document.getElementById('pdf-upload');
+
+pdfInput.addEventListener('change', e => {
+  if (e.target.files[0]) verwerkPDFBestand(e.target.files[0]);
+});
+
+pdfGebied.addEventListener('dragover', e => {
+  e.preventDefault();
+  pdfGebied.classList.add('dragover');
+});
+
+pdfGebied.addEventListener('dragleave', () => {
+  pdfGebied.classList.remove('dragover');
+});
+
+pdfGebied.addEventListener('drop', e => {
+  e.preventDefault();
+  pdfGebied.classList.remove('dragover');
+  const bestand = e.dataTransfer.files[0];
+  if (bestand?.type === 'application/pdf') verwerkPDFBestand(bestand);
+});
+
+document.getElementById('pdf-wis-btn').addEventListener('click', () => {
+  document.getElementById('pdf-panel').style.display = 'none';
+  document.getElementById('pdf-tekst').innerHTML = '';
+  document.getElementById('pdf-status').textContent = '';
+  document.getElementById('pdf-upload-gebied').classList.remove('heeft-bestand');
+  pdfInput.value = '';
+});
+
+document.getElementById('pdf-tekst').addEventListener('click', e => {
+  const getal = e.target.closest('.pdf-getal');
+  if (!getal) return;
+  navigator.clipboard.writeText(getal.textContent.trim()).then(() => {
+    getal.classList.add('gekopieerd');
+    setTimeout(() => getal.classList.remove('gekopieerd'), 1200);
+  });
+});
 
 // --- Initialisatie ---
 
