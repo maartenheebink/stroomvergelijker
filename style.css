@@ -92,6 +92,34 @@ header h1 {
   margin-top: 2px;
 }
 
+.thema-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.thema-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.header-scheider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.3);
+  align-self: center;
+  flex-shrink: 0;
+}
+
 .taal-btn {
   background: rgba(255, 255, 255, 0.15);
   color: white;
@@ -793,4 +821,127 @@ tbody tr.goedkoopste:hover {
   .tarief-drieluik .input-group {
     flex-basis: 100%;
   }
+}
+
+/* ===== DONKER THEMA ===== */
+
+html[data-thema="donker"] {
+  color-scheme: dark;
+
+  --kleur-primair:       #60a5fa;
+  --kleur-primair-hover: #3b82f6;
+  --kleur-groen:         #4ade80;
+  --kleur-groen-licht:   #052e16;
+  --kleur-achtergrond:   #0f172a;
+  --kleur-kaart:         #1e293b;
+  --kleur-rand:          #334155;
+  --kleur-tekst:         #f1f5f9;
+  --kleur-tekst-zacht:   #94a3b8;
+  --kleur-rood:          #f87171;
+  --kleur-rood-hover:    #ef4444;
+  --schaduw:             0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Inputs & selects */
+html[data-thema="donker"] input[type="text"],
+html[data-thema="donker"] input[type="number"],
+html[data-thema="donker"] select {
+  background: #0f172a;
+  color: #f1f5f9;
+}
+
+html[data-thema="donker"] input[type="text"]:focus,
+html[data-thema="donker"] input[type="number"]:focus,
+html[data-thema="donker"] select:focus {
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+html[data-thema="donker"] input.berekend {
+  background: #1e3a5f;
+  color: #93c5fd;
+}
+
+html[data-thema="donker"] input.berekend:focus {
+  background: #0f172a;
+  color: #f1f5f9;
+}
+
+/* Tabel */
+html[data-thema="donker"] thead th {
+  background: #263244;
+}
+
+html[data-thema="donker"] tbody tr:hover {
+  background: #263244;
+}
+
+html[data-thema="donker"] tbody tr.goedkoopste:hover {
+  background: #14532d;
+}
+
+/* Bewerk banner */
+html[data-thema="donker"] .bewerk-banner {
+  background: #422006;
+  border-color: #78350f;
+  color: #fef3c7;
+}
+
+/* Knoppen */
+html[data-thema="donker"] .btn-secondary:hover {
+  background: #263244;
+}
+
+html[data-thema="donker"] .bewerk-btn:hover {
+  background: #1e3a5f;
+}
+
+html[data-thema="donker"] .verwijder-btn:hover {
+  background: #450a0a;
+}
+
+/* Toggle */
+html[data-thema="donker"] .toggle-switch {
+  border-color: #475569;
+}
+
+html[data-thema="donker"] .toggle-switch::after {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Toelichting */
+html[data-thema="donker"] .toelichting-item dd code {
+  background: #263244;
+}
+
+/* PDF upload */
+html[data-thema="donker"] .pdf-upload-gebied:hover,
+html[data-thema="donker"] .pdf-upload-gebied.dragover {
+  background: #263244;
+}
+
+html[data-thema="donker"] .pdf-panel {
+  background: #1a2438;
+}
+
+html[data-thema="donker"] .pdf-panel-hoofd,
+html[data-thema="donker"] .pdf-kopieer-hint {
+  background: #1e293b;
+}
+
+html[data-thema="donker"] .pdf-wis-btn:hover {
+  background: #450a0a;
+}
+
+html[data-thema="donker"] .pdf-getal {
+  background: #3d2900;
+  color: #fde68a;
+}
+
+html[data-thema="donker"] .pdf-getal:hover {
+  background: #5c3d00;
+}
+
+html[data-thema="donker"] .pdf-getal.gekopieerd {
+  background: #052e16;
+  color: #4ade80;
 }
